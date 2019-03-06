@@ -1,0 +1,55 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  creationTimestamp: "2019-03-06T14:00:37Z"
+  name: garciaj-admin-binding
+  resourceVersion: "2503"
+  selfLink: /apis/rbac.authorization.k8s.io/v1/clusterrolebindings/garciaj-admin-binding
+  uid: 37c4d319-4018-11e9-8151-42010a80000d
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: garciaj.uk@gmail.com
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: jeronimo
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pspcr
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - '*'
+- apiGroups:
+  - extensions
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - my-psp
+  verbs:
+  - use
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: psprb
+  namespace: example
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pspcr
+subjects:
+- kind: ServiceAccount # Omit apiGroup
+  name: jeronimo
+  namespace: example
